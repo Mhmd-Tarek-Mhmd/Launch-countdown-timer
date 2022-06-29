@@ -5,4 +5,4 @@ This is a solution to the [Launch countdown timer challenge on Frontend Mentor](
 ## Links
 
 - Live Site [URL](https://mhmd-tarek-mhmd.github.io/Launch-countdown-timer/)
-- Solution [URL](https://www.frontendmentor.io/solutions/launch-countdown-timer-)
+- Solution [URL](https://www.frontendmentor.io/solutions/launch-countdown-timer-wHufK1AZsU)
