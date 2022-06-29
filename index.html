@@ -270,7 +270,7 @@
       #timer .top {
         transition-delay: 0s;
         transform-origin: bottom;
-        transform: rotateX(0deg);
+        transform: rotateX(-5deg);
       }
       #timer .bottom {
         transition-delay: 0.3s;
@@ -383,7 +383,7 @@
                 $("#timer").innerHTML += `
                   <div aria-hidden="true" class="slot" data-unit=${label}>
                     <span></span>
-                    <div class="num" data-num=${num}>
+                    <div class="num">
                       <div class="back">${num}</div>
                       <div class="top" data-top-num=${num}></div>
                       <div class="bottom" data-bottom-num=${num}></div>
