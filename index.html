@@ -68,6 +68,12 @@
         }
       }
 
+      .main #a11y-caption {
+		    width: 0;
+	    	height: 0;
+				position: absolute;
+	    	clip: rect(0,0,0,0);
+      }
       .main .slot {
         position: relative;
         border-radius: 10px;
@@ -288,7 +294,9 @@
     <main class="main">
       <article class="wrapper">
         <h1>We're Launching Soon</h1>
-        <div id="timer"></div>
+        <div id="timer" role="timer">
+       		<div id="a11y-caption" role="alert" aria-live="assertive"></div>
+        </div>
       </article>
     </main>
 
@@ -363,7 +371,9 @@
 
         const Views = {
           init: function () {
-            const { getLabels, getTime } = Controller;
+            const { getDays, getLabels, getTime } = Controller;
+
+            $("#a11y-caption").innerHTML = getDays() + " days left";
 
             getLabels()
               .reverse()
@@ -371,11 +381,9 @@
                 let num = getTime()[i];
 
                 $("#timer").innerHTML += `
-                  <div class="slot" data-unit=${label} aria-label=${
-                  num + label
-                }>
-                    <span aria-hidden="true"></span>
-                    <div aria-hidden="true" class="num" data-num=${num}>
+                  <div aria-hidden="true" class="slot" data-unit=${label}>
+                    <span></span>
+                    <div class="num" data-num=${num}>
                       <div class="back">${num}</div>
                       <div class="top" data-top-num=${num}></div>
                       <div class="bottom" data-bottom-num=${num}></div>
@@ -390,6 +398,14 @@
           render: function () {
             const { getDays, getHr, getMin, getSec } = Controller;
 
+            let captionTimer = setInterval(() => {
+            	$("#a11y-caption").innerHTML =
+            		getDays() + " days, " +
+            		getHr() + " hours, " +
+            		getMin() + " minutes left"
+            	;
+            }, 60000);
+
             let timer = setInterval(() => {
               if (!+getSec()) {
                 !+getHr() && Helpers.updateDays();
@@ -401,6 +417,7 @@
 
               if (!+getSec() && !+getMin() && !+getHr() && !+getDays()) {
                 clearInterval(timer);
+                clearInterval(captionTimer);
               }
             }, 1000);
           },
@@ -417,7 +434,6 @@
               return clearTimeout(flipTimer);
             }, 500);
 
-            $(slotUnit).ariaLabel = unitNum + " " + unitLabel;
             $(`${slotUnit} .back`).innerHTML = unitNum;
             $(`${slotUnit} .top`).dataset.topNum = unitNum;
             $(`${slotUnit} .bottom`).dataset.bottomNum = unitNum;
