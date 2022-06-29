@@ -5,6 +5,284 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Launch countdown timer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Red+Hat+Text:wght@700&display=swap"
+    />
+    <style>
+      :root {
+        --bg: hsl(235, 16%, 14%);
+        --red: hsl(345, 95%, 68%);
+        --gray: hsl(237, 18%, 59%);
+      }
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        text-transform: uppercase;
+        font: 700 14px/1 "Red Hat Text", sans-serif;
+      }
+      body {
+        user-select: none;
+        min-height: 100vh;
+        background-color: var(--bg);
+      }
+
+      /*
+        [1] Layout
+      */
+
+      .main {
+        min-height: 500px;
+        height: calc(100vh - 200px);
+
+        display: grid;
+        place-items: center;
+        background: url(images/bg-stars.svg) no-repeat top left, var(--bg);
+      }
+      .main .wrapper {
+        gap: 61px;
+        display: grid;
+        text-align: center;
+      }
+      .main #timer {
+        gap: 16px;
+        display: grid;
+        overflow-x: clip;
+        justify-content: center;
+        grid-template-rows: 66px;
+        grid-template-columns: repeat(4, minmax(0, 70px));
+      }
+      @media (min-width: 992px) {
+        .main .wrapper {
+          gap: 111px;
+        }
+        .main #timer {
+          gap: 32px;
+          grid-template-rows: 140px;
+          grid-template-columns: repeat(4, 148px);
+        }
+      }
+
+      .main .slot {
+        position: relative;
+        border-radius: 10px;
+        background-color: hsl(236, 21%, 26%);
+        box-shadow: 0 5px 0 0 hsl(234, 17%, 12%);
+      }
+      .main .slot::after {
+        left: 50%;
+        position: absolute;
+        top: calc(100% + 14px);
+        transform: translateX(-50%);
+      }
+
+      .main .slot span {
+        left: 0;
+        top: 50%;
+        z-index: 99;
+        width: 100%;
+        height: 0.25pt;
+        display: block;
+        position: absolute;
+        transform: translateY(-50%);
+        background-color: var(--bg);
+      }
+      .main .slot span::before,
+      .main .slot span::after {
+        top: 50%;
+        width: 6px;
+        height: 6px;
+        content: "";
+        z-index: inherit;
+        position: absolute;
+        border-radius: 50px;
+        background-color: var(--bg);
+        transform: translateY(-50%);
+      }
+      .main .slot span::before {
+        left: -3px;
+      }
+      .main .slot span::after {
+        right: -3px;
+      }
+      @media (min-width: 992px) {
+        .main .slot span::before,
+        .main .slot span::after {
+          width: 12px;
+          height: 12px;
+        }
+        .main .slot span::before {
+          left: -6px;
+        }
+        .main .slot span::after {
+          right: -6px;
+        }
+        .main .slot::after {
+          top: calc(100% + 28px);
+        }
+      }
+
+      .main .num,
+      .main .back,
+      .main .top,
+      .main .bottom,
+      .main .top::before,
+      .main .bottom::before {
+        width: 100%;
+        display: grid;
+        place-items: center;
+        border-radius: inherit;
+        background-color: inherit;
+      }
+      .main .num,
+      .main .back {
+        height: 100%;
+      }
+      .main .top,
+      .main .bottom {
+        height: 50%;
+        overflow: hidden;
+        position: absolute;
+      }
+      .main .top {
+        top: 0;
+      }
+      .main .bottom {
+        bottom: 0;
+      }
+      .main .top::before,
+      .main .bottom::before {
+        left: 0;
+        height: 100%;
+        position: absolute;
+      }
+      .main .top::before {
+        top: 45%;
+        content: attr(data-top-num);
+      }
+      .main .bottom::before {
+        bottom: 54%;
+        content: attr(data-bottom-num);
+      }
+
+      .footer {
+        display: grid;
+        align-items: end;
+        min-height: 200px;
+        padding-bottom: 46px;
+        justify-content: center;
+        background: url(images/pattern-hills.svg) no-repeat top 3px left -800px;
+      }
+      @media (min-width: 992px) {
+        .footer {
+          padding-bottom: 70px;
+          background-position: top 3px left -200px;
+        }
+      }
+      @media (min-width: 1200px) {
+        .footer {
+          background-position: left;
+        }
+      }
+      .footer .social {
+        gap: 32px;
+        display: flex;
+        list-style: none;
+        place-items: center;
+      }
+
+      /*
+        [2] Typography
+      */
+
+      .main h1 {
+        color: #fff;
+        line-height: 1.4;
+        font-size: 1.3rem;
+        letter-spacing: 7px;
+      }
+      .main .slot::after {
+        font-size: 8px;
+        color: var(--gray);
+        letter-spacing: 3px;
+        content: attr(data-unit);
+      }
+      .main .num {
+        color: var(--red);
+        font-size: 2.5rem;
+      }
+      .main .back,
+      .main .top,
+      .main .bottom,
+      .main .top::before,
+      .main .bottom::before {
+        font-size: inherit;
+      }
+      @media (min-width: 992px) {
+        .main h1 {
+          font-size: 1.5rem;
+        }
+        .main .slot {
+          box-shadow: 0 10px 0 0 hsl(234, 17%, 12%);
+        }
+        .main .slot::after {
+          font-size: 1rem;
+          letter-spacing: 6px;
+        }
+        .main .num {
+          font-size: 5.4rem;
+        }
+      }
+
+      .footer a {
+        will-change: color;
+        color: var(--gray);
+      }
+      .footer a:hover {
+        color: var(--red);
+      }
+
+      /*
+        [3] Animation
+      */
+
+      #timer .num {
+        perspective: 200px;
+      }
+
+      #timer .top,
+      #timer .bottom {
+        will-change: transform;
+        transform-style: preserve-3d;
+        transition-property: transform;
+      }
+      #timer .top {
+        transition-delay: 0s;
+        transform-origin: bottom;
+        transform: rotateX(0deg);
+      }
+      #timer .bottom {
+        transition-delay: 0.3s;
+        transform-origin: top;
+        transform: rotateX(90deg);
+      }
+
+      #timer .flip .top,
+      #timer .flip .bottom {
+        transition-duration: 0.3s;
+      }
+      #timer .flip .top {
+        transform: rotateX(-90deg);
+      }
+      #timer .flip .bottom {
+        transform: rotateX(0deg);
+      }
+    </style>
   </head>
   <body>
     <main class="main">
