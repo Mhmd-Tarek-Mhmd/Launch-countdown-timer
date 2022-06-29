@@ -323,5 +323,139 @@
         </li>
       </ul>
     </footer>
+
+    <script>
+      (function () {
+        const $ = document.querySelector.bind(document);
+
+        const Modal = {
+          seconds: 0,
+          minutes: 0,
+          hours: 0,
+          days: 14,
+        };
+
+        const Controller = {
+          getSec: () => Helpers.numFormat(Modal.seconds),
+          setSec: (val) => (Modal.seconds = val),
+
+          getMin: () => Helpers.numFormat(Modal.minutes),
+          setMin: (val) => (Modal.minutes = val),
+
+          getHr: () => Helpers.numFormat(Modal.hours),
+          setHr: (val) => (Modal.hours = val),
+
+          getDays: () => Helpers.numFormat(Modal.days),
+          setDays: (val) => (Modal.days = val),
+
+          getLabels: () => Object.keys(Modal),
+          getTime: () => [
+            Controller.getDays(),
+            Controller.getHr(),
+            Controller.getMin(),
+            Controller.getSec(),
+          ],
+
+          init: function () {
+            Views.init();
+          },
+        };
+
+        const Views = {
+          init: function () {
+            const { getLabels, getTime } = Controller;
+
+            getLabels()
+              .reverse()
+              .forEach((label, i) => {
+                let num = getTime()[i];
+
+                $("#timer").innerHTML += `
+                  <div class="slot" data-unit=${label} aria-label=${
+                  num + label
+                }>
+                    <span aria-hidden="true"></span>
+                    <div aria-hidden="true" class="num" data-num=${num}>
+                      <div class="back">${num}</div>
+                      <div class="top" data-top-num=${num}></div>
+                      <div class="bottom" data-bottom-num=${num}></div>              
+                    </div>
+                  </div>
+                `;
+              });
+
+            this.render();
+          },
+
+          render: function () {
+            const { getDays, getHr, getMin, getSec } = Controller;
+
+            let timer = setInterval(() => {
+              if (!+getSec()) {
+                !+getHr() && Helpers.updateDays();
+                !+getMin() && Helpers.updateHr();
+                Helpers.updateMin();
+              }
+
+              Helpers.updateSec();
+
+              if (!+getSec() && !+getMin() && !+getHr() && !+getDays()) {
+                clearInterval(timer);
+              }
+            }, 1000);
+          },
+        };
+
+        const Helpers = {
+          numFormat: (num) => (num < 10 ? "0" + num : num),
+          updateUI: (unitLabel, unitNum) => {
+            let slotUnit = `.slot[data-unit=${unitLabel}]`;
+
+            $(slotUnit).classList.add("flip");
+            let flipTimer = setTimeout(() => {
+              $(slotUnit).classList.remove("flip");
+              return clearTimeout(flipTimer);
+            }, 500);
+
+            $(slotUnit).ariaLabel = unitNum + " " + unitLabel;
+            $(`${slotUnit} .back`).innerHTML = unitNum;
+            $(`${slotUnit} .top`).dataset.topNum = unitNum;
+            $(`${slotUnit} .bottom`).dataset.bottomNum = unitNum;
+          },
+
+          updateDays: function () {
+            const { setDays, getDays } = Controller;
+
+            if (+Controller.getDays()) {
+              setDays(getDays() - 1);
+              this.updateUI("days", getDays());
+            }
+          },
+
+          updateHr: function () {
+            let val = !+Controller.getHr() ? 23 : +Controller.getHr() - 1;
+
+            Controller.setHr(val);
+            this.updateUI("hours", Controller.getHr());
+          },
+
+          updateMin: function () {
+            let val = !+Controller.getMin() ? 59 : +Controller.getMin() - 1;
+
+            Controller.setMin(val);
+            this.updateUI("minutes", Controller.getMin());
+          },
+
+          updateSec: function () {
+            let val = !+Controller.getSec() ? 59 : +Controller.getSec() - 1;
+
+            Controller.setSec(val);
+            this.updateUI("seconds", Controller.getSec());
+          },
+        };
+
+        Controller.init();
+      })();
+    </script>
   </body>
 </html>
