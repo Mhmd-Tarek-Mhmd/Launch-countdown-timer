@@ -57,7 +57,7 @@
         grid-template-rows: 66px;
         grid-template-columns: repeat(4, minmax(0, 70px));
       }
-      @media (min-width: 992px) {
+      @media (min-width: 768px) {
         .main .wrapper {
           gap: 111px;
         }
@@ -116,7 +116,7 @@
       .main .slot span::after {
         right: -3px;
       }
-      @media (min-width: 992px) {
+      @media (min-width: 768px) {
         .main .slot span::before,
         .main .slot span::after {
           width: 12px;
@@ -184,7 +184,7 @@
         justify-content: center;
         background: url(images/pattern-hills.svg) no-repeat top 3px left -800px;
       }
-      @media (min-width: 992px) {
+      @media (min-width: 768px) {
         .footer {
           padding-bottom: 70px;
           background-position: top 3px left -200px;
@@ -208,9 +208,13 @@
 
       .main h1 {
         color: #fff;
-        line-height: 1.4;
         font-size: 1.3rem;
         letter-spacing: 7px;
+      }
+      @media (max-width: 400px) {
+        .main h1 {
+          line-height: 1.4;
+        }
       }
       .main .slot::after {
         font-size: 8px;
@@ -229,7 +233,7 @@
       .main .bottom::before {
         font-size: inherit;
       }
-      @media (min-width: 992px) {
+      @media (min-width: 768px) {
         .main h1 {
           font-size: 1.5rem;
         }
