@@ -37,12 +37,11 @@
       */
 
       .main {
-        min-height: 500px;
-        height: calc(100vh - 200px);
-
         display: grid;
+        min-height: 500px;
         place-items: center;
-        background: url(images/bg-stars.svg) no-repeat top left, var(--bg);
+        height: calc(100vh - 200px);
+        background: var(--bg), url(images/bg-stars.svg) no-repeat top left;
       }
       .main .wrapper {
         gap: 61px;
@@ -52,14 +51,13 @@
       .main #timer {
         gap: 16px;
         display: grid;
-        overflow-x: clip;
         justify-content: center;
         grid-template-rows: 66px;
         grid-template-columns: repeat(4, minmax(0, 70px));
       }
       @media (min-width: 768px) {
         .main .wrapper {
-          gap: 111px;
+          gap: 110px;
         }
         .main #timer {
           gap: 32px;
